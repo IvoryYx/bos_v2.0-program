@@ -27,5 +27,14 @@ public class CourierServiceImpl implements CourierService {
 	public Page<Courier> findPageData(Specification<Courier> specification, Pageable pageable) {
 		return courierRepository.findAll(specification,pageable);
 	}
+	@Override
+	public void delBatch(String[] idArray) {
+		// 调用DAO实现 update修改操作，将deltag 修改为1
+				for (String idStr : idArray) {
+					Integer id = Integer.parseInt(idStr);
+					courierRepository.updateDelTag(id);
+				}
+		
+	}
 
 }
