@@ -34,6 +34,17 @@
 					idField : 'id',
 					columns : columns
 				});
+				
+				// 对收派标准 save按钮，添加click事件
+				$("#save").click(function(){
+					// 判断是否form中所有表单对象 都是通过校验 
+					if($("#standardForm").form('validate')){
+						// 通过校验 
+						$("#standardForm").submit();
+					}else{
+						$.messager.alert("警告","表单中还存在需要一些非法内容","warning");						
+					}
+				});
 			});	
 			
 			//工具栏
@@ -42,7 +53,7 @@
 				text : '增加',
 				iconCls : 'icon-add',
 				handler : function(){
-					alert('增加');
+				   $("#standardWindow").window('open');
 				}
 			}, {
 				id : 'button-edit',
@@ -115,7 +126,7 @@
 
 			<div region="center" style="overflow:auto;padding:5px;" border="false">
 				
-				<form>
+				<form  id="standardForm"  action="../../standard_save.action" method="post">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">收派标准信息
