@@ -10,11 +10,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
 /**
  * @description:收派标准
  */
 @Entity
 @Table(name = "T_STANDARD")
+@NamedQueries({
+	@NamedQuery(name="Standard.queryName2",query="from Standard where name=?")})
 public class Standard {
 	@Id
 	@GeneratedValue
@@ -112,11 +117,9 @@ public class Standard {
 
 	@Override
 	public String toString() {
-		return "Standard [id=" + id + ", name=" + name + ", minWeight="
-				+ minWeight + ", maxWeight=" + maxWeight + ", minLength="
-				+ minLength + ", maxLength=" + maxLength + ", operatingTime="
-				+ operatingTime + ", operator=" + operator
-				+ ", operatingCompany=" + operatingCompany + "]";
+		return "Standard [id=" + id + ", name=" + name + ", minWeight=" + minWeight + ", maxWeight=" + maxWeight
+				+ ", minLength=" + minLength + ", maxLength=" + maxLength + ", operatingTime=" + operatingTime
+				+ ", operator=" + operator + ", operatingCompany=" + operatingCompany + "]";
 	}
 
 }
