@@ -1,4 +1,4 @@
-package cn.itcast.bos.domain.base;
+package cn.itheima.bos.domain.base;
 
 import java.util.HashSet;
 import java.util.Set;
