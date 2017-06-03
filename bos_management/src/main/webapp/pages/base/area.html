@@ -18,6 +18,24 @@
 		<script type="text/javascript" src="../../js/easyui/ext/jquery.cookie.js"></script>
 		<script src="../../js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
 		<script type="text/javascript">
+		    <!--导入自定义函数效果-->
+		    $.fn.serializeJson=function(){  
+            var serializeObj={};  
+            var array=this.serializeArray();  
+            var str=this.serialize();  
+            $(array).each(function(){  
+                if(serializeObj[this.name]){  
+                    if($.isArray(serializeObj[this.name])){  
+                        serializeObj[this.name].push(this.value);  
+                    }else{  
+                        serializeObj[this.name]=[serializeObj[this.name],this.value];
+                    }  
+                }else{  
+                    serializeObj[this.name]=this.value;   
+                }  
+            });  
+            return serializeObj;  
+        }; 
 			function doAdd(){
 				$('#addWindow').window("open");
 			}
@@ -50,7 +68,14 @@
 				id : 'button-import',
 				text : '导入',
 				iconCls : 'icon-redo'
-			}];
+			},{
+				id : 'button-search',
+				text :'查询',
+				iconCls: 'icon-search',
+				handler : function(){
+					$("#searchWindow").window('open');
+				}
+				}];
 			// 定义列
 			var columns = [ [ {
 				field : 'id',
@@ -101,7 +126,7 @@
 					pageList: [30,50,100],
 					pagination : true,
 					toolbar : toolbar,
-					url : "../../data/area.json",
+					url : "../../area_pageQuery.action",
 					idField : 'id',
 					columns : columns,
 					onDblClickRow : doDblClickRow
@@ -139,7 +164,17 @@
 			    		alert("文件上传成功！");
 			    	}
 			    });
-				
+			    	
+				// 为查询提交按钮 ，添加点击事件
+				$("#searchBtn").click(function(){
+					// 将查询表单内容转换为 json 
+					var params = $("#searchForm").serializeJson();
+					// 绑定参数到datagrid
+					$("#grid").datagrid('load',params);
+					// 关闭查询窗口
+					$("#searchWindow").window('close');
+				});
+			    
 			});
 		
 			function doDblClickRow(){
