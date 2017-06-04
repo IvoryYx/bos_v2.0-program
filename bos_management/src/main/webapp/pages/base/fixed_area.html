@@ -31,8 +31,37 @@
 				$('#searchWindow').window("open");
 			}
 			
+			// 关联客户窗口弹出
 			function doAssociations(){
-				$('#customerWindow').window('open');
+				// 判定用户是否只选择了一个定区 
+				var rows = $("#grid").datagrid('getSelections');
+				if(rows.length == 1){
+					//只选择一行
+					$('#customerWindow').window('open');
+					// 将选中定区id，设置到form的隐藏域 
+					$("#courierFixedAreaId").val(rows[0].id);	
+					
+					// 发起Ajax请求 
+					$.post("../../fixedArea_findNoAssociationCustomers.action", function(data){
+						// 查询所有 未关联定区客户列表
+						$(data).each(function(){
+							var option = $("<option value='"+this.id+"'>"+this.username+"("+this.address+")</option>");
+							$("#noassociationSelect").append(option);
+						});
+					});
+					
+					$.post("../../fixedArea_findHasAssociationFixedAreaCustomers.action",{"id":rows[0].id} , function(data){
+						// 查询所有 关联当前选中定区客户列表
+						$(data).each(function(){
+							var option = $("<option value='"+this.id+"'>"+this.username+"("+this.address+")</option>");
+							$("#associationSelect").append(option);
+						});
+					});
+					
+				}else{
+					// 没有选 或者 选了多个定区 
+					$.messager.alert('警告','定区关联客户必须（只能）选择一个定区','warning');
+				}
 			}
 			
 			//工具栏
@@ -436,7 +465,7 @@
 		</div>
 
 		<!-- 关联客户窗口 -->
-		<div class="easyui-window" title="关联客户窗口" id="customerWindow" collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 600px;height: 300px;">
+		<div class="easyui-window" title="关联客户窗口" id="customerWindow" modal="true"  collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 600px;height: 300px;">
 			<div style="overflow:auto;padding:5px;" border="false">
 				<form id="customerForm" action="../../decidedzone_assigncustomerstodecidedzone.action" method="post">
 					<table class="table-edit" width="80%" align="center">

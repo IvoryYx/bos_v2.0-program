@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import cn.itheima.bos.domain.base.FixedArea;
 import cn.itheima.bos.service.base.FixedAreaService;
 import cn.itheima.bos.web.action.common.BaseAction;
+import cn.itheima.crm.domain.Customer;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -85,6 +86,30 @@ public class FixedAreaAction extends BaseAction<FixedArea>{
 			// 压入值栈
 			pushPageDataToValueStack(pageData);
 
+			return SUCCESS;
+		}
+		
+		// 查询未关联定区列表
+		@Action(value = "fixedArea_findNoAssociationCustomers", results = { @Result(name = "success", type = "json") })
+		public String findNoAssociationCustomers() {
+			// 使用webClient调用 webService接口
+			Collection<? extends Customer> collection = WebClient
+					.create("http://localhost:9002/crm_management/services/customerService/noassociationcustomers")
+					.accept(MediaType.APPLICATION_JSON)
+					.getCollection(Customer.class);
+			ActionContext.getContext().getValueStack().push(collection);
+			return SUCCESS;
+		}
+
+		// 查询关联当前定区的列表
+		@Action(value = "fixedArea_findHasAssociationFixedAreaCustomers", results = { @Result(name = "success", type = "json") })
+		public String findHasAssociationFixedAreaCustomers() {
+			// 使用webClient调用 webService接口
+			Collection<? extends Customer> collection = WebClient
+					.create("http://localhost:9002/crm_management/services/customerService/associationfixedareacustomers/"
+							+ model.getId()).accept(MediaType.APPLICATION_JSON)
+					.type(MediaType.APPLICATION_JSON).getCollection(Customer.class);
+			ActionContext.getContext().getValueStack().push(collection);
 			return SUCCESS;
 		}
 
