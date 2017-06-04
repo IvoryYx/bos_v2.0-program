@@ -129,7 +129,7 @@
 					pageList: [30,50,100],
 					pagination : true,
 					toolbar : toolbar,
-					url : "../../data/fixed_area.json",
+					url : "../../fixedArea_pageQuery.action",
 					idField : 'id',
 					columns : columns,
 					onDblClickRow : doDblClickRow
@@ -156,8 +156,30 @@
 			        height: 400,
 			        resizable:false
 			    });
+			    
 				$("#btn").click(function(){
 					alert("执行查询...");
+				});
+				
+				 // 点击查询按钮，将form数据转换为json 绑定datagrid 
+				$("#btn").click(function(){
+					// 转换form对象 到 json
+					var params = $("#searchForm").serializeJson();
+					// 绑定datagrid 
+					$("#grid").datagrid('load',params);
+					// 关闭查询窗口 
+					$("#searchWindow").window('close');
+				});
+				
+				 // 点击 添加定区的保存按钮，实现添加定区
+				$("#save").click(function(){
+					// 先校验表单 
+					if($("#fixedAreaForm").form('validate')){
+						$("#fixedAreaForm").submit();
+					}else{
+						// 提示用户
+						$.messager.alert("警告","表单存在非法数据项！","warning");
+					}
 				});
 				
 			});
@@ -339,7 +361,8 @@
 			</div>
 
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form>
+				<form id="fixedAreaForm" 
+					action="../../fixedArea_save.action" method="post">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">定区信息</td>
@@ -381,7 +404,7 @@
 		<!-- 查询定区 -->
 		<div class="easyui-window" title="查询定区窗口" id="searchWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form>
+				<form id="searchForm">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">查询条件</td>
