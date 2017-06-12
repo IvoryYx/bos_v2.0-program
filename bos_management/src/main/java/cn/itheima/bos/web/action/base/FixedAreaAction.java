@@ -112,5 +112,47 @@ public class FixedAreaAction extends BaseAction<FixedArea>{
 			ActionContext.getContext().getValueStack().push(collection);
 			return SUCCESS;
 		}
+		
+		// 属性驱动
+		private String[] customerIds;
+
+		public void setCustomerIds(String[] customerIds) {
+			this.customerIds = customerIds;
+		}
+
+		// 关联客户到定区
+		@Action(value = "fixedArea_associationCustomersToFixedArea", results = { @Result(name = "success", type = "redirect", location = "./pages/base/fixed_area.html") })
+		public String associationCustomersToFixedArea() {
+			String customerIdStr = StringUtils.join(customerIds, ",");
+			WebClient.create(
+					"http://localhost:9002/crm_management/services/customerService"
+							+ "/associationcustomerstofixedarea?customerIdStr="
+							+ customerIdStr + "&fixedAreaId=" + model.getId()).put(
+					null);
+			return SUCCESS;
+		}
+		
+		// 属性驱动
+		private Integer courierId;
+		private Integer takeTimeId;
+
+		public void setCourierId(Integer courierId) {
+			this.courierId = courierId;
+		}
+
+		public void setTakeTimeId(Integer takeTimeId) {
+			this.takeTimeId = takeTimeId;
+		}
+
+		// 关联快递员 到定区
+		@Action(value = "fixedArea_associationCourierToFixedArea", 
+				results = { @Result(name = "success", type = "redirect", 
+				location = "./pages/base/fixed_area.html") })
+		public String associationCourierToFixedArea() {
+			// 调用业务层， 定区关联快递员
+			fixedAreaService.associationCourierToFixedArea(model, courierId,
+					takeTimeId);
+			return SUCCESS;
+		}
 
 }

@@ -7,8 +7,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.itheima.bos.dao.base.CourierRepository;
 import cn.itheima.bos.dao.base.FixedAreaRepository;
+import cn.itheima.bos.dao.base.TakeTimeRepository;
+import cn.itheima.bos.domain.base.Courier;
 import cn.itheima.bos.domain.base.FixedArea;
+import cn.itheima.bos.domain.base.TakeTime;
 import cn.itheima.bos.service.base.FixedAreaService;
 
 @Service
@@ -29,6 +33,26 @@ public class FixedAreaServiceImpl implements FixedAreaService {
 		public Page<FixedArea> findPageData(Specification<FixedArea> specification, Pageable pageable) {
 			// TODO Auto-generated method stub
 			return fixedAreaRepository.findAll(specification, pageable);
+		}
+		
+		@Autowired
+		private CourierRepository courierRepository;
+		@Autowired
+		private TakeTimeRepository takeTimeRepository;
+
+		@Override
+		public void associationCourierToFixedArea(FixedArea  fixedArea, Integer courierId, 
+				Integer takeTimeId) {
+			FixedArea persistFixedArea = fixedAreaRepository.findOne(fixedArea
+					.getId());
+			Courier courier = courierRepository.findOne(courierId);
+			TakeTime takeTime = takeTimeRepository.findOne(takeTimeId);
+			// 快递员 关联到 定区上
+			persistFixedArea.getCouriers().add(courier);
+
+			// 将收派标准 关联到 快递员上
+			courier.setTakeTime(takeTime);
+			
 		}
 
 }

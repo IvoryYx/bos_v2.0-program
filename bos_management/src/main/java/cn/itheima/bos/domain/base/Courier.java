@@ -1,5 +1,6 @@
 package cn.itheima.bos.domain.base;
 
+import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,6 +57,12 @@ public class Courier {
 
 	@ManyToMany(mappedBy = "couriers")
 	private Set<FixedArea> fixedAreas = new HashSet<FixedArea>();
+	
+	@Transient
+	// 防止被生成数据表中的列
+	public String getInfo() {
+		return name + "(" + company + ")";
+	}
 
 	public Integer getId() {
 		return id;

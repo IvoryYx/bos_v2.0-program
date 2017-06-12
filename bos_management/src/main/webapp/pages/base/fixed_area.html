@@ -32,27 +32,38 @@
 			}
 			
 			// 关联客户窗口弹出
-			function doAssociations(){
+			function doAssociationCustomers(){
 				// 判定用户是否只选择了一个定区 
 				var rows = $("#grid").datagrid('getSelections');
 				if(rows.length == 1){
 					//只选择一行
 					$('#customerWindow').window('open');
 					// 将选中定区id，设置到form的隐藏域 
-					$("#courierFixedAreaId").val(rows[0].id);	
-					
+					$("#customerFixedAreaId").val(rows[0].id);	
+					//显示进度条
+					$.messager.progress({
+						interval :500//每0.5秒加载10%，5秒加载完成
+					});
 					// 发起Ajax请求 
 					$.post("../../fixedArea_findNoAssociationCustomers.action", function(data){
 						// 查询所有 未关联定区客户列表
 						$(data).each(function(){
+							//清空列表
+							$("#noassociationSelect").empty();
 							var option = $("<option value='"+this.id+"'>"+this.username+"("+this.address+")</option>");
 							$("#noassociationSelect").append(option);
 						});
+						//请求结束后，关闭进度条
+						$.messager.progress('close');
+						//弹出关闭窗口
+						$('#customerWindow').Window('open');
 					});
 					
 					$.post("../../fixedArea_findHasAssociationFixedAreaCustomers.action",{"id":rows[0].id} , function(data){
 						// 查询所有 关联当前选中定区客户列表
 						$(data).each(function(){
+							//清空列表
+							$("#associationSelect").empty();
 							var option = $("<option value='"+this.id+"'>"+this.username+"("+this.address+")</option>");
 							$("#associationSelect").append(option);
 						});
@@ -89,7 +100,7 @@
 				id : 'button-association',
 				text : '关联客户',
 				iconCls : 'icon-sum',
-				handler : doAssociations
+				handler : doAssociationCustomers
 			},{
 				id : 'button-association-courier',
 				text : '关联快递员',
@@ -101,6 +112,8 @@
 						// 只选择了一个定区
 						// 弹出定区关联快递员 窗口 
 						$("#courierWindow").window('open');
+						// 保存选中定区id 到表单隐藏域
+						$("#courierFixedAreaId").val(rows[0].id);
 					}else{
 						// 没有选中定区，或者选择 了多个定区
 						$.messager.alert("警告","关联快递员,只能（必须）选择一个定区","warning");
@@ -208,6 +221,35 @@
 					}else{
 						// 提示用户
 						$.messager.alert("警告","表单存在非法数据项！","warning");
+					}
+				});
+				
+				// 向右移动按钮 
+				$("#toRight").click(function(){
+					$("#associationSelect").append($("#noassociationSelect option:selected"));
+				});
+				
+				// 向左移动按钮
+				$("#toLeft").click(function(){
+					$("#noassociationSelect").append($("#associationSelect option:selected"));
+				});
+				
+				
+				// 为关联客户按钮，添加click事件
+				$("#associationBtn").click(function(){
+					// 选中所有 已关联定区客户select中选项 
+					$("#associationSelect option").attr("selected","selected");
+					// 提交表单
+					$("#customerForm").submit();
+				});
+				
+				// 为关联快递员按钮，添加click事件
+				$("#associationCourierBtn").click(function(){
+					// 判断表单是否通过校验
+					if($("#courierForm").form('validate')){
+						$("#courierForm").submit();
+					}else{
+						$.messager.alert("警告","表单中存在非法数据","warning");
 					}
 				});
 				
@@ -467,7 +509,7 @@
 		<!-- 关联客户窗口 -->
 		<div class="easyui-window" title="关联客户窗口" id="customerWindow" modal="true"  collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 600px;height: 300px;">
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form id="customerForm" action="../../decidedzone_assigncustomerstodecidedzone.action" method="post">
+				<form id="customerForm" action="../../fixedArea_associationCustomersToFixedArea.action" method="post">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="3">关联客户</td>
@@ -511,13 +553,16 @@
 							<td>
 								<!-- 存放定区编号 -->
 								<input type="hidden" name="id" id="courierFixedAreaId" />
-								<input type="text" name="courierId" class="easyui-combobox" required="true" />
+								<input type="text" name="courierId" class="easyui-combobox" required="true" 
+									data-options="url:'../../courier_findnoassociation.action',valueField:'id',textField:'info'"/>
 							</td>
 						</tr>
 						<tr>
 							<td>选择收派时间</td>
 							<td>
-								<input type="text" name="takeTimeId" class="easyui-combobox" required="true" />
+								<input type="text" name="takeTimeId" class="easyui-combobox" required="true" 
+									data-options="url:'../../taketime_findAll.action', 
+									valueField:'id',textField:'name'"/>
 							</td>
 						</tr>
 						<tr>
