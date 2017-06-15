@@ -1,4 +1,4 @@
-﻿package cn.itheima.bos.utils;
+package cn.itheima.bos.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,8 +28,8 @@ import org.w3c.dom.NodeList;
  *
  */
 public class SmsUtils {
-	private static String userid = "IvoryYx";
-	private static String pass = "YX19940213";
+	private static String userid = "seawind";
+	private static String pass = "itcast123456";
 
 	/**
 	 * 调用HTTP 协议方式发送短信
@@ -39,7 +39,8 @@ public class SmsUtils {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String sendSmsByHTTP(String mobile, String content) throws UnsupportedEncodingException {
+	public static String sendSmsByHTTP(String mobile, String content)
+			throws UnsupportedEncodingException {
 		HttpURLConnection httpconn = null;
 		String result = "Error";
 		StringBuilder sb = new StringBuilder();
@@ -54,7 +55,8 @@ public class SmsUtils {
 		try {
 			URL url = new URL(sb.toString());
 			httpconn = (HttpURLConnection) url.openConnection();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(httpconn.getInputStream()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					httpconn.getInputStream()));
 			result = rd.readLine();
 			rd.close();
 		} catch (MalformedURLException e) {
@@ -99,14 +101,18 @@ public class SmsUtils {
 		}
 	}
 
-	private static String getSoapSmssend(String userid, String pass, String mobiles, String msg, String time) {
+	private static String getSoapSmssend(String userid, String pass,
+			String mobiles, String msg, String time) {
 		try {
 			String soap = "";
 			soap = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 					+ "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-					+ "<soap:Body>" + "<SendMessages xmlns=\"http://tempuri.org/\">" + "<uid>" + userid + "</uid>"
-					+ "<pwd>" + pass + "</pwd>" + "<tos>" + mobiles + "</tos>" + "<msg>" + msg + "</msg>" + "<otime>"
-					+ time + "</otime>" + "</SendMessages>" + "</soap:Body>" + "</soap:Envelope>";
+					+ "<soap:Body>"
+					+ "<SendMessages xmlns=\"http://tempuri.org/\">" + "<uid>"
+					+ userid + "</uid>" + "<pwd>" + pass + "</pwd>" + "<tos>"
+					+ mobiles + "</tos>" + "<msg>" + msg + "</msg>" + "<otime>"
+					+ time + "</otime>" + "</SendMessages>" + "</soap:Body>"
+					+ "</soap:Envelope>";
 			return soap;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -114,8 +120,8 @@ public class SmsUtils {
 		}
 	}
 
-	private static InputStream getSoapInputStream(String userid, String pass, String mobiles, String msg, String time)
-			throws Exception {
+	private static InputStream getSoapInputStream(String userid, String pass,
+			String mobiles, String msg, String time) throws Exception {
 		URLConnection conn = null;
 		InputStream is = null;
 		try {
@@ -131,10 +137,13 @@ public class SmsUtils {
 				conn.setUseCaches(false);
 				conn.setDoInput(true);
 				conn.setDoOutput(true);
-				conn.setRequestProperty("Content-Length", Integer.toString(soap.length()));
-				conn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
+				conn.setRequestProperty("Content-Length",
+						Integer.toString(soap.length()));
+				conn.setRequestProperty("Content-Type",
+						"text/xml; charset=utf-8");
 				conn.setRequestProperty("HOST", "service2.winic.org");
-				conn.setRequestProperty("SOAPAction", "\"http://tempuri.org/SendMessages\"");
+				conn.setRequestProperty("SOAPAction",
+						"\"http://tempuri.org/SendMessages\"");
 
 				OutputStream os = conn.getOutputStream();
 				OutputStreamWriter osw = new OutputStreamWriter(os, "utf-8");
@@ -158,10 +167,10 @@ public class SmsUtils {
 
 	public static void main(String[] args) throws IOException {
 		String randomCode = RandomStringUtils.randomNumeric(4);
-        System.out.println(sendSmsByHTTP("13770655250", randomCode));
-		 System.out.println(sendSmsByHTTP("13770655250", "尊敬的用户您好，本次获取的验证码为："
-		 + randomCode + ",服务电话：4006184000"));
-		//System.out.println(sendSmsByWebService("13770655250", "尊敬的用户您好，本次获取的验证码为："
-				// + randomCode + ",服务电话：4006184000"));
+		// System.out.println(sendSmsByHTTP("xxx", randomCode));
+		// System.out.println(sendSmsByHTTP("xxx", "尊敬的用户您好，本次获取的验证码为："
+		// + randomCode + ",服务电话：4006184000"));
+		System.out.println(sendSmsByWebService("xxx", "尊敬的用户您好，本次获取的验证码为："
+				+ randomCode + ",服务电话：4006184000"));
 	}
 }

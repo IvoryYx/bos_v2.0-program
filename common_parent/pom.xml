@@ -155,7 +155,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
-			<version>${springdataredis.version}</version>
+			<version>1.4.1.RELEASE</version>
 		</dependency>
 
 		<!-- oracle数据库驱动，需要手动安装  -->
@@ -252,8 +252,20 @@
 			<artifactId>fastjson-jaxrs-json-provider</artifactId>
 			<version>0.3.1</version>
 		</dependency>
+		<!-- javamail邮件功能支持 -->
+		<dependency>
+			<groupId>javamail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		
+	    <dependency>
+	    <groupId>org.apache.xbean</groupId>
+		<artifactId>xbean-spring</artifactId>
+		<version>3.7</version>
+		</dependency>
 	</dependencies>
-
+    
 	<build>
 		<finalName>bos</finalName>
 		<pluginManagement>

@@ -19,4 +19,10 @@
 	<!-- 加载properties文件 -->
 	<context:property-placeholder location="classpath:config.properties" />
 	
+	<!-- 引入redis配置 -->
+	<import resource="applicationContext-cache.xml"/>
+	
+	<!-- 引入mq配置 -->
+	<import resource="applicationContext-mq.xml"/>
+	
 </beans>

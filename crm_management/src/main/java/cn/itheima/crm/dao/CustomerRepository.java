@@ -18,6 +18,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 	@Modifying
 	public void updateFixedAreaId(String fixedAreaId, Integer id);
 	
-    
+	public Customer findByTelephone(String telephone);
+
+	@Query("update Customer set type=1 where telephone= ?")
+	@Modifying
+	public void updateType(String telephone);
 
 }
